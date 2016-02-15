@@ -257,6 +257,9 @@ function find(connectionName, collectionName, criteria, cb, round) {
   if (queriedAttributes.length === 0) {
     console.log('Queried Attributes" (aka criteria\'s WHERE clause) doesn\'t contain any values-- listing everything!');
 
+    // skip design documents
+    dbOptions.endkey = '_design';
+
     // All docs
     dbOptions.include_docs = true;
     // TODO: test if limit works?
