@@ -745,7 +745,7 @@ adapter.getAttachment = function create(connectionName, collectionName, docId, a
  * @param  {String}     attName         Name of the attachment
  * @return {Promise}                    Resolves attahcment destroyed
  */
-adapter.deattach = function create(connectionName, collectionName, docId, attName) {
+adapter.detach = function create(connectionName, collectionName, docId, attName) {
   return new Promise(function (fulfill, reject) {
     try {
       var db = registry.db(collectionName);
