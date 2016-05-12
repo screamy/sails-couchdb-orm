@@ -691,25 +691,21 @@ function sanitizeCollectionName (collectionName) {
  */
 adapter.attach = function create(connectionName, collectionName, docId, attName, attBuffer, attType) {
   return new Promise(function (fulfill, reject) {
-    try {
-      var db = registry.db(collectionName);
-      db.get(docId, function (err, _doc) {
-        if (err) {
-          return reject(err);
-        }
-        _doc = docForReply(_doc);
+    var db = registry.db(collectionName);
+    db.get(docId, function (err, _doc) {
+      if (err) {
+        return reject(err);
+      }
+      _doc = docForReply(_doc);
 
-        db.attachment.insert(_doc.id, attName, attBuffer, attType, {rev: _doc.rev},
-          function (err, body) {
-            if (err) {
-              return reject(err)
-            }
-            fulfill(body);
-          });
-      });
-    } catch (err) {
-      reject(err);
-    }
+      db.attachment.insert(_doc.id, attName, attBuffer, attType, {rev: _doc.rev},
+        function (err, body) {
+          if (err) {
+            return reject(err)
+          }
+          fulfill(body);
+        });
+    });
   });
 };
 
@@ -725,13 +721,9 @@ adapter.attach = function create(connectionName, collectionName, docId, attName,
  */
 adapter.getAttachment = function create(connectionName, collectionName, docId, attName) {
   return new Promise(function (fulfill, reject) {
-    try {
-      var db = registry.db(collectionName);
-      var stream = db.attachment.get(docId, attName);
-      fulfill(stream);
-    } catch (err) {
-      reject(err);
-    }
+    var db = registry.db(collectionName);
+    var stream = db.attachment.get(docId, attName);
+    fulfill(stream);
   });
 };
 
@@ -747,24 +739,20 @@ adapter.getAttachment = function create(connectionName, collectionName, docId, a
  */
 adapter.detach = function create(connectionName, collectionName, docId, attName) {
   return new Promise(function (fulfill, reject) {
-    try {
-      var db = registry.db(collectionName);
-      db.get(docId, function (err, _doc) {
-        if (err) {
-          return reject(err);
-        }
-        _doc = docForReply(_doc);
+    var db = registry.db(collectionName);
+    db.get(docId, function (err, _doc) {
+      if (err) {
+        return reject(err);
+      }
+      _doc = docForReply(_doc);
 
-        db.attachment.destroy(_doc.id, attName, _doc.rev,
-          function (err, body) {
-            if (err) {
-              return reject(err)
-            }
-            fulfill(body);
-          });
-      });
-    } catch (err) {
-      reject(err);
-    }
+      db.attachment.destroy(_doc.id, attName, _doc.rev,
+        function (err, body) {
+          if (err) {
+            return reject(err)
+          }
+          fulfill(body);
+        });
+    });
   });
 };
