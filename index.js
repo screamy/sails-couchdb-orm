@@ -674,3 +674,97 @@ function sanitizeCollectionName (collectionName) {
   });
 
 }
+
+/*============================== Attachments Support ==========================================*/
+
+/**
+ *
+ * Cretes or updates an attachment in target document
+ *
+ * @param  {String}     connectionName  Name of the connection
+ * @param  {String}     collectionName  Name of the model
+ * @param  {String|Int} docId           Target document identifier
+ * @param  {String}     attName         Name of the attachment
+ * @param  {Buffer}     attBuffer       The buffer that represents attachment content
+ * @param  {String}     attType         The MIME type of the attachment
+ * @return {Promise}                    Resolves attahcment operation result when succeded
+ */
+adapter.attach = function create(connectionName, collectionName, docId, attName, attBuffer, attType) {
+  return new Promise(function (fulfill, reject) {
+    try {
+      var db = registry.db(collectionName);
+      db.get(docId, function (err, _doc) {
+        if (err) {
+          return reject(err);
+        }
+        _doc = docForReply(_doc);
+
+        db.attachment.insert(_doc.id, attName, attBuffer, attType, {rev: _doc.rev},
+          function (err, body) {
+            if (err) {
+              return reject(err)
+            }
+            fulfill(body);
+          });
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+/**
+ *
+ * Gets attachment stream for the specified document
+ *
+ * @param  {String}     connectionName  Name of the connection
+ * @param  {String}     collectionName  Name of the model
+ * @param  {String|Int} docId           Target document identifier
+ * @param  {String}     attName         Name of the attachment
+ * @return {Promise}                    Resolves attahcment stream when succeded
+ */
+adapter.getAttachment = function create(connectionName, collectionName, docId, attName) {
+  return new Promise(function (fulfill, reject) {
+    try {
+      var db = registry.db(collectionName);
+      var stream = db.attachment.get(docId, attName);
+      fulfill(stream);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+
+/**
+ *
+ * Destroys an attachment in the specified document
+ *
+ * @param  {String}     connectionName  Name of the connection
+ * @param  {String}     collectionName  Name of the model
+ * @param  {String|Int} docId           Target document identifier
+ * @param  {String}     attName         Name of the attachment
+ * @return {Promise}                    Resolves attahcment destroyed
+ */
+adapter.deattach = function create(connectionName, collectionName, docId, attName) {
+  return new Promise(function (fulfill, reject) {
+    try {
+      var db = registry.db(collectionName);
+      db.get(docId, function (err, _doc) {
+        if (err) {
+          return reject(err);
+        }
+        _doc = docForReply(_doc);
+
+        db.attachment.destroy(_doc.id, attName, _doc.rev,
+          function (err, body) {
+            if (err) {
+              return reject(err)
+            }
+            fulfill(body);
+          });
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
