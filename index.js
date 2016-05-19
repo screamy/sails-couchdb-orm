@@ -2,17 +2,17 @@
  * Module dependencies
  */
 
-var nano      = require('nano');
-var async     = require('async');
-var extend    = require('xtend');
-var cookie    = require('cookie');
-var DeepMerge = require('deep-merge');
-var _         = require('underscore');
+var nano        = require('nano');
+var async       = require('async');
+var extend      = require('xtend');
+var deepExtend  = require('deep-extend');
+var cookie      = require('cookie');
+var _           = require('underscore');
 
-var merge = DeepMerge(function(a, b) {
-  return b;
-});
-
+var merge = function(a, b) {
+  deepExtend(a, b);
+  return a;
+};
 var registry = require('./registry');
 var views    = require('./views');
 
