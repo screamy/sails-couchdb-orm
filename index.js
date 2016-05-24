@@ -710,18 +710,16 @@ adapter.attach = function create(connectionName, collectionName, docId, attName,
  *
  * Gets attachment stream for the specified document
  *
- * @param  {String}     connectionName  Name of the connection
- * @param  {String}     collectionName  Name of the model
- * @param  {String|Int} docId           Target document identifier
- * @param  {String}     attName         Name of the attachment
- * @return {Promise}                    Resolves attahcment stream when succeded
+ * @param  {String} connectionName  Name of the connection
+ * @param  {String} collectionName  Name of the model
+ * @param  {String} docId           Target document identifier
+ * @param  {String} attName         Name of the attachment
+ * @param  {Function} callback      Done callback
+ * @return {Promise} Resolved with stream
  */
-adapter.getAttachment = function create(connectionName, collectionName, docId, attName) {
-  return new Promise(function (fulfill, reject) {
-    var db = registry.db(collectionName);
-    var stream = db.attachment.get(docId, attName);
-    fulfill(stream);
-  });
+adapter.getAttachment = function create(connectionName, collectionName, docId, attName, callback) {
+  var db = registry.db(collectionName);
+  return db.attachment.get(docId, attName, callback);
 };
 
 /**
